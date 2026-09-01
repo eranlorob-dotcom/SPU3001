@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activité — Environnement bâti favorable à la santé (SPU 3001)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --marine: #12384f;
+    --teal: #2b7a8c;
+    --teal-pale: #eaf3f5;
+    --slate: #34495e;
+    --border: #d4dee2;
+    --amber-bg: #fdf6ec;
+    --amber-border: #e6c98a;
+    --ink: #22303a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 28px 64px;
+    background: #fff;
+  }
+  header.activite {
+    border-bottom: 3px solid var(--marine);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .surtitre {
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-size: 1.62rem;
+    color: var(--marine);
+    margin: 0 0 10px;
+    line-height: 1.2;
+  }
+  .meta {
+    font-size: 0.92rem;
+    color: var(--slate);
+    margin: 0;
+  }
+  .meta span { display: inline-block; margin-right: 18px; }
+  .meta strong { color: var(--marine); }
+  h2 {
+    font-size: 1.16rem;
+    color: var(--marine);
+    margin: 30px 0 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+  }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 18px;
+    font-size: 0.94rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--marine);
+    color: #fff;
+    font-weight: 600;
+  }
+  tbody tr:nth-child(even) { background: var(--teal-pale); }
+  .grille td:first-child { font-weight: 600; color: var(--marine); width: 26%; }
+  .grille .vide { background: #fff; }
+  .callout {
+    background: var(--teal-pale);
+    border-left: 4px solid var(--teal);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 14px 0 18px;
+  }
+  .callout h3 { margin: 0 0 8px; font-size: 1.02rem; color: var(--marine); }
+  .corrige {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 14px 0 18px;
+  }
+  .corrige h3 { margin: 0 0 8px; font-size: 1.02rem; color: #8a5a12; }
+  .duree { font-weight: 600; color: var(--teal); white-space: nowrap; }
+  .note-edit {
+    font-size: 0.82rem;
+    color: #8a7a55;
+    font-style: italic;
+  }
+  footer {
+    margin-top: 36px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--slate);
+  }
+</style>
+</head>
+<body>
+
+<header class="activite">
+  <p class="surtitre">SPU 3001 — Planification urbaine : territoire et règlements</p>
+  <h1>Activité — Qu'est-ce qu'un environnement bâti favorable à la santé&nbsp;?</h1>
+  <p class="meta">
+    <span><strong>Format&nbsp;:</strong> sous-groupes de 3–4</span>
+    <span><strong>Durée&nbsp;:</strong> ~15 min + mise en commun</span>
+    <span><strong>Séance&nbsp;:</strong> ____ <span class="note-edit">(activité préparatoire à la sortie terrain, séance 11)</span></span>
+  </p>
+</header>
+
+<h2>Intentions pédagogiques</h2>
+<p>Au terme de l'activité, l'étudiant·e devrait pouvoir&nbsp;:</p>
+<ul>
+  <li>repérer, à partir d'une image, des éléments de l'environnement bâti (EB) qui favorisent ou nuisent à la santé&nbsp;;</li>
+  <li>relier chaque élément à un mécanisme d'action sur la santé, plutôt que de rester au constat descriptif&nbsp;;</li>
+  <li>contribuer à une grille de lecture commune, réutilisable comme fiche d'observation pour la sortie terrain (séance 11).</li>
+</ul>
+
+<h2>Matériel et préparation</h2>
+<p>Prévoir <strong>3 milieux contrastés</strong>, chacun en double vue&nbsp;: une photo aérienne ou oblique (forme urbaine) + une vue de rue au sol (expérience piétonne). Suggestion ancrée dans les Laurentides, pour préparer le terrain&nbsp;:</p>
+<ul>
+  <li><strong>Milieu A — noyau urbain traditionnel</strong> (p. ex. centre de Saint-Jérôme)&nbsp;: trame de rue serrée, mixité des usages, transport actif et collectif.</li>
+  <li><strong>Milieu B — développement pavillonnaire dépendant de l'auto</strong> (p. ex. secteur récent à Mirabel/Saint-Sauveur avec artère commerciale et grands stationnements)&nbsp;: faible mixité, longues distances, îlots de chaleur, absence de trottoirs.</li>
+  <li><strong>Milieu C — noyau villageois</strong> (p. ex. Val-David ou village de Saint-Sauveur)&nbsp;: échelle intermédiaire, convivialité, accès de proximité inégal.</li>
+</ul>
+<p>Sources d'images&nbsp;: Google Earth (vue aérienne/oblique) + Street View (vue de rue), cadrées sur le même point pour rendre le contraste lisible. Deux options de distribution&nbsp;: <strong>un milieu par sous-groupe</strong> (comparaison à la mise en commun, réaliste pour 15 min) ou <strong>les 3 milieux à tous les groupes</strong> (plus riche, plus long).</p>
+
+<h2>Déroulement (~30–35 min)</h2>
+<table>
+  <thead>
+    <tr><th style="width:16%">Temps</th><th style="width:26%">Phase</th><th>Ce qui se passe</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="duree">2–3 min</td><td>Amorce</td><td>Rappel de la consigne + remise des images et de la grille</td></tr>
+    <tr><td class="duree">15 min</td><td>Sous-groupes (3–4)</td><td>Observer → repérer les éléments favorables <em>et</em> défavorables → classer selon les composantes → noter le lien avec la santé</td></tr>
+    <tr><td class="duree">12–15 min</td><td>Mise en commun</td><td>Construction au tableau de la liste collective de référence</td></tr>
+  </tbody>
+</table>
+
+<h2>Grille de travail (remise aux sous-groupes)</h2>
+<p>La quatrième colonne fait passer du constat au mécanisme&nbsp;: c'est elle qui porte l'apprentissage.</p>
+<table class="grille">
+  <thead>
+    <tr>
+      <th>Composante de l'EB</th>
+      <th>Éléments favorables repérés</th>
+      <th>Éléments défavorables repérés</th>
+      <th>Lien avec la santé (mécanisme, pour qui&nbsp;?)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Densité et forme urbaine</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Mixité des usages et accès de proximité</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Réseau de rues et mobilité active / collective</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Espaces verts et bleus, nature</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Qualité environnementale et nuisances (bruit, air, chaleur)</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Sécurité (routière et sentiment de sécurité)</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Logement et milieu résidentiel</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+    <tr><td>Convivialité, design et inclusion (accessibilité universelle)</td><td class="vide"></td><td class="vide"></td><td class="vide"></td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <h3>Questions de relance pour l'animation</h3>
+  <p>Trois relances suffisent à faire monter le niveau si un groupe stagne au descriptif&nbsp;:</p>
+  <ul>
+    <li><strong>Pour qui</strong> cet environnement est-il favorable ou non&nbsp;? (enfant, aîné, personne sans voiture, à mobilité réduite) — l'angle de l'équité.</li>
+    <li><strong>Quel comportement de santé</strong> est facilité ou entravé ici&nbsp;? (marcher, jouer dehors, s'alimenter sainement, socialiser, s'exposer à la chaleur)</li>
+    <li>Qu'est-ce qui relève de <strong>l'aménagement</strong> — donc modifiable par la réglementation — plutôt que du seul usage&nbsp;?</li>
+  </ul>
+</div>
+
+<h2>Mise en commun et trace collective</h2>
+<p>Structurer le tableau par composante et faire émerger, colonne par colonne, les <strong>caractéristiques favorables</strong> consolidées. Le produit final n'est pas une liste de « ce qu'on a vu », mais une <strong>liste de référence des caractéristiques d'un EB favorable à la santé</strong>. Garder visibles une ou deux <strong>tensions</strong> (densité vs îlots de chaleur, animation commerciale vs bruit)&nbsp;: un même aménagement peut jouer dans les deux sens.</p>
+
+<div class="corrige">
+  <h3>Corrigé indicatif — ce qu'un EB favorable présente typiquement</h3>
+  <p>Trame de rue connectée et perméable&nbsp;; mixité mettant commerces, services, écoles et aliments santé à distance de marche&nbsp;; trottoirs continus et aménagements cyclables sécuritaires&nbsp;; accès au transport collectif&nbsp;; parcs et couvert végétal accessibles&nbsp;; faible exposition au bruit, à la pollution et à la chaleur&nbsp;; rues sécuritaires et vitesses modérées&nbsp;; logement de qualité et abordable&nbsp;; espaces publics conviviaux et universellement accessibles.</p>
+</div>
+
+<h2>Lien avec la séance 11</h2>
+<p>Annoncer explicitement en clôture que <strong>cette liste collective devient la fiche d'observation de la sortie terrain</strong>&nbsp;: les étudiant·es iront valider sur le terrain ce qu'ils ont déduit d'images. Cela donne du sens à l'activité et crée une continuité entre les deux séances.</p>
+
+<footer>
+  SPU 3001 — Planification urbaine : territoire et règlements · ESPUM, Université de Montréal · Automne 2026
+</footer>
+
+</body>
+</html>
