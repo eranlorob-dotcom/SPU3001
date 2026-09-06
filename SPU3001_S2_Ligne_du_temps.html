@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPU 3001 — Ligne du temps de l'aménagement et de la santé au Québec</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --marine:#0E2A33; --ink:#1A3B47; --teal:#1B8A9C; --teal-d:#0F626F; --teal-l:#9CCBD4;
+    --tint:#F4F8F9; --gold:#C8952F; --gold-bg:#F3E7CE; --gold-line:#E0CFA6; --gold-t:#8A6318;
+    --gold-x:#5E4411; --slate:#6E7F85; --line:#D7E1E3;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:'Source Sans 3',system-ui,-apple-system,sans-serif;
+    color:var(--ink); background:#fff; line-height:1.55;
+  }
+
+  /* ---------- en-tête ---------- */
+  .hero{
+    background:var(--marine); color:#fff; padding:44px 26px 38px; position:relative; overflow:hidden;
+  }
+  .hero::after{
+    content:""; position:absolute; right:-90px; top:-110px; width:340px; height:340px;
+    border-radius:50%; background:var(--teal-d); opacity:.45;
+  }
+  .hero::before{
+    content:""; position:absolute; right:60px; bottom:-120px; width:200px; height:200px;
+    border-radius:50%; background:var(--gold); opacity:.18;
+  }
+  .hero-inner{max-width:1080px; margin:0 auto; position:relative; z-index:1}
+  .kicker{
+    font-size:.76rem; font-weight:700; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--teal-l); margin:0 0 10px;
+  }
+  h1{
+    font-family:'Source Serif 4',Georgia,serif; font-size:2.1rem; font-weight:700;
+    margin:0 0 10px; line-height:1.18; max-width:22ch;
+  }
+  .sub{color:var(--teal-l); font-size:1.05rem; margin:0 0 4px; max-width:60ch}
+  .byline{color:var(--slate); font-size:.9rem; margin:14px 0 0}
+
+  /* ---------- barre de contrôles ---------- */
+  .controls{
+    position:sticky; top:0; z-index:20; background:rgba(255,255,255,.96);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 26px;
+  }
+  .controls-inner{
+    max-width:1080px; margin:0 auto; display:flex; flex-wrap:wrap;
+    align-items:center; gap:10px 18px;
+  }
+  .grp{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .lbl{
+    font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--slate); margin-right:2px;
+  }
+  button{font:inherit; cursor:pointer}
+  .chip{
+    border:1px solid var(--line); background:#fff; color:var(--ink);
+    padding:5px 13px; border-radius:20px; font-size:.85rem; font-weight:600;
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:var(--teal); color:var(--teal-d)}
+  .chip[aria-pressed="true"]{background:var(--teal-d); border-color:var(--teal-d); color:#fff}
+  .toggle{
+    border:1px solid var(--gold-line); background:var(--gold-bg); color:var(--gold-t);
+    padding:5px 13px; border-radius:6px; font-size:.85rem; font-weight:600;
+  }
+  .toggle[aria-pressed="true"]{background:var(--gold); border-color:var(--gold); color:#fff}
+  .count{margin-left:auto; font-size:.82rem; color:var(--slate)}
+
+  /* ---------- corps ---------- */
+  main{max-width:1080px; margin:0 auto; padding:34px 26px 70px}
+  .intro{
+    background:var(--tint); border-left:4px solid var(--teal); border-radius:4px;
+    padding:14px 20px; margin:0 0 34px; font-size:.95rem; color:var(--slate);
+  }
+  .intro strong{color:var(--marine)}
+
+  .era{
+    display:flex; align-items:center; gap:14px; margin:44px 0 26px;
+  }
+  .era:first-of-type{margin-top:8px}
+  .era-num{
+    flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--gold);
+    color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center;
+    font-size:.9rem;
+  }
+  .era-txt h2{
+    font-family:'Source Serif 4',Georgia,serif; font-size:1.3rem; color:var(--marine);
+    margin:0 0 2px; line-height:1.25;
+  }
+  .era-txt p{margin:0; font-size:.88rem; color:var(--slate)}
+
+  /* ---------- axe ---------- */
+  .tl{position:relative; padding:6px 0}
+  .tl::before{
+    content:""; position:absolute; left:22px; top:0; bottom:0; width:3px;
+    background:linear-gradient(to bottom,var(--teal-l),var(--teal),var(--gold));
+    border-radius:2px;
+  }
+
+  .item{position:relative; padding:0 0 22px 62px}
+  .item.hidden{display:none}
+  .dot{
+    position:absolute; left:14px; top:16px; width:19px; height:19px; border-radius:50%;
+    background:#fff; border:4px solid var(--teal); z-index:2;
+  }
+  .item[data-era="3"] .dot{border-color:var(--gold)}
+
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:9px;
+    padding:16px 20px; box-shadow:0 1px 3px rgba(14,42,51,.05);
+    transition:box-shadow .18s ease, transform .18s ease;
+  }
+  .card:hover{box-shadow:0 5px 18px rgba(14,42,51,.09); transform:translateY(-1px)}
+
+  .chead{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:7px}
+  .year{
+    font-family:'Source Serif 4',Georgia,serif; font-size:1.5rem; font-weight:700;
+    color:var(--teal-d); line-height:1; letter-spacing:-.01em;
+  }
+  .item[data-era="3"] .year{color:var(--gold)}
+  .year.masked{color:transparent; background:var(--line); border-radius:4px; user-select:none}
+  h3{margin:0; font-size:1.06rem; font-weight:700; color:var(--marine); flex:1 1 260px; line-height:1.3}
+
+  .scales{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 9px}
+  .sc{
+    font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    padding:3px 9px; border-radius:11px; color:#fff;
+  }
+  .sc-nat{background:var(--marine)}
+  .sc-reg{background:var(--teal)}
+  .sc-mun{background:var(--gold)}
+  .sc-int{background:var(--slate)}
+
+  .desc{margin:0 0 11px; font-size:.94rem; color:var(--ink)}
+  .health{
+    background:var(--gold-bg); border-radius:6px; padding:9px 13px;
+    font-size:.9rem; color:var(--gold-x);
+  }
+  .health.masked{filter:blur(5px); user-select:none}
+  .health .tag{
+    display:inline-block; background:var(--gold); color:#fff; font-size:.62rem; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; padding:2px 7px; border-radius:3px;
+    margin-right:8px; vertical-align:2px;
+  }
+
+  .empty{
+    display:none; text-align:center; padding:40px 20px; color:var(--slate);
+    background:var(--tint); border-radius:8px; margin-top:14px;
+  }
+
+  footer{
+    max-width:1080px; margin:0 auto; padding:22px 26px 46px;
+    border-top:1px solid var(--line); font-size:.85rem; color:var(--slate);
+  }
+  footer p{margin:0 0 6px}
+
+  /* ---------- grand écran : alternance ---------- */
+  @media (min-width:900px){
+    .tl::before{left:50%; margin-left:-1.5px}
+    .item{padding:0 0 26px 0; width:50%}
+    .item:nth-child(odd){padding-right:44px; text-align:right}
+    .item:nth-child(even){margin-left:50%; padding-left:44px}
+    .item:nth-child(odd) .dot{left:auto; right:-9.5px}
+    .item:nth-child(even) .dot{left:-9.5px}
+    .item:nth-child(odd) .chead,
+    .item:nth-child(odd) .scales{justify-content:flex-end}
+    .item:nth-child(odd) h3{flex:0 1 auto}
+  }
+
+  /* ---------- impression ---------- */
+  @media print{
+    .controls{display:none}
+    .hero{background:#fff; color:var(--marine); padding:0 0 18px}
+    .hero::after,.hero::before{display:none}
+    h1{color:var(--marine)} .sub{color:var(--slate)} .kicker{color:var(--teal)}
+    body{font-size:10pt}
+    .item{break-inside:avoid; width:100% !important; margin:0 !important;
+          padding:0 0 12px 46px !important; text-align:left !important}
+    .tl::before{left:16px; margin-left:0}
+    .item .dot{left:8px !important; right:auto !important}
+    .card{box-shadow:none}
+    .health.masked,.year.masked{filter:none; color:inherit; background:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="kicker">SPU 3001 · Planification urbaine : territoire et règlements</p>
+    <h1>Deux siècles d'aménagement et de santé au Québec</h1>
+    <p class="sub">Vingt jalons, de la première épidémie de choléra au nouveau cadre sur les inondations.
+    L'urbanisme naît d'un problème de santé publique — puis les deux champs se séparent, avant de se
+    retrouver.</p>
+    <p class="byline">Séance 2 · Éric Robitaille, Ph. D. · École de santé publique de l'Université de Montréal</p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="grp">
+      <span class="lbl">Échelle</span>
+      <button class="chip" data-filter="all" aria-pressed="true">Toutes</button>
+      <button class="chip" data-filter="nat" aria-pressed="false">Nationale</button>
+      <button class="chip" data-filter="reg" aria-pressed="false">Régionale</button>
+      <button class="chip" data-filter="mun" aria-pressed="false">Municipale</button>
+      <button class="chip" data-filter="int" aria-pressed="false">Internationale</button>
+    </div>
+    <div class="grp">
+      <span class="lbl">Mode atelier</span>
+      <button class="toggle" id="hideYears" aria-pressed="false">Masquer les années</button>
+      <button class="toggle" id="hideHealth" aria-pressed="false">Masquer les enjeux</button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+
+<main>
+  <p class="intro"><strong>Comment lire cette ligne du temps.</strong> Chaque jalon porte une ou plusieurs
+  échelles — nationale, régionale, municipale — et l'enjeu de santé qu'il met en jeu. Les deux boutons
+  « mode atelier » masquent les années ou les enjeux de santé : de quoi projeter la ligne du temps en classe
+  et faire chercher les réponses avant de les révéler.</p>
+
+  <div class="era">
+    <div class="era-num">1</div>
+    <div class="era-txt">
+      <h2>Les origines sanitaires</h2>
+      <p>1832 – 1974 · L'insalubrité urbaine devient une affaire publique, et le zonage naît pour y répondre</p>
+    </div>
+  </div>
+
+  <div class="tl" id="tl1">
+
+    <div class="item" data-era="1" data-scales="nat mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1832</span><h3>Épidémies de choléra à Québec et à Montréal</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">Des milliers de décès en quelques mois. Les autorités mettent sur pied les premiers
+        bureaux de santé et s'attaquent à l'insalubrité des quartiers portuaires.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Maladies infectieuses, salubrité de l'eau et
+        du logement. L'insalubrité urbaine devient pour la première fois une affaire publique.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="1" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1887</span><h3>Création du Conseil d'hygiène de la province de Québec</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">Un organisme permanent est chargé de surveiller la salubrité publique sur l'ensemble
+        du territoire québécois.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Institutionnalisation de la santé publique.
+        Naissance d'une expertise d'État sur l'eau, les déchets et le logement.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="1" data-scales="mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1916</span><h3>Premier règlement de zonage en Amérique du Nord</h3></div>
+        <div class="scales"><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">New York adopte un règlement qui sépare les usages et limite la hauteur des bâtiments,
+        notamment pour protéger l'accès à la lumière et à l'air.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Le zonage naît d'une préoccupation sanitaire —
+        éloigner les usages nocifs des logements. Le même outil sera plus tard critiqué pour ses effets d'exclusion.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="1" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1972</span><h3>Loi sur la qualité de l'environnement</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">Le Québec se dote d'un cadre général de protection de l'environnement et d'un régime
+        d'autorisation des activités polluantes.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Qualité de l'air, de l'eau et des sols.
+        L'environnement devient un champ réglementaire distinct de la santé publique.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="1" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1974</span><h3>Rapport Lalonde — Nouvelle perspective de la santé des Canadiens</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale (fédérale)</span></div>
+        <p class="desc">Un rapport fédéral marquant qui propose de regarder au-delà du système de soins pour
+        expliquer l'état de santé d'une population.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Reconnaissance des déterminants de la santé,
+        dont l'environnement. Fondement intellectuel de l'aménagement favorable à la santé.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="era">
+    <div class="era-num">2</div>
+    <div class="era-txt">
+      <h2>La construction du cadre</h2>
+      <p>1978 – 2002 · Le Québec se donne l'appareil légal qui structure encore aujourd'hui le territoire</p>
+    </div>
+  </div>
+
+  <div class="tl" id="tl2">
+
+    <div class="item" data-era="2" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1978</span><h3>Loi sur la protection du territoire agricole</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">La zone agricole est protégée par une loi et son dézonage est soumis à l'autorisation
+        d'une commission indépendante.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Sécurité alimentaire, limitation de
+        l'étalement urbain. Première grande contrainte imposée à l'expansion des banlieues.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1978</span><h3>Création du Bureau d'audiences publiques sur l'environnement</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">Une modification de la Loi sur la qualité de l'environnement institue un organisme
+        chargé de consulter la population sur les grands projets.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Participation citoyenne aux décisions ayant
+        un impact sur le milieu de vie. Le public obtient une tribune formelle.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="nat reg mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1979</span><h3>Loi sur l'aménagement et l'urbanisme</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-reg">Régionale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">La loi crée les MRC, impose les schémas d'aménagement et les plans d'urbanisme, et
+        institue le mécanisme de conformité entre les paliers.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Acte fondateur du système actuel. Tout
+        l'appareil qui permet aujourd'hui d'agir sur l'environnement bâti en découle.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="int">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1986</span><h3>Charte d'Ottawa pour la promotion de la santé</h3></div>
+        <div class="scales"><span class="sc sc-int">Internationale</span></div>
+        <p class="desc">Une conférence internationale définit la promotion de la santé et place la création de
+        milieux favorables parmi ses axes d'action.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Cadre de référence qui légitime l'action sur
+        les milieux de vie plutôt que sur les seuls comportements individuels.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">1994</span><h3>Premières orientations gouvernementales en aménagement du territoire</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">Le gouvernement énonce pour la première fois ses attentes envers les MRC en matière
+        d'aménagement. Elles resteront en vigueur trente ans.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Cadre de la période d'expansion suburbaine.
+        Peu d'attention explicite à la santé, au climat ou à la mobilité active.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="reg">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2001</span><h3>Création des communautés métropolitaines de Montréal et de Québec</h3></div>
+        <div class="scales"><span class="sc sc-reg">Régionale (métropolitaine)</span></div>
+        <p class="desc">Un palier supra-régional est institué pour planifier l'aménagement et le transport à
+        l'échelle des grandes régions métropolitaines.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Permet de traiter l'étalement urbain et le
+        transport collectif à la bonne échelle — celle des déplacements réels.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="nat reg">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2001</span><h3>Loi sur la santé publique du Québec</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-reg">Régionale</span></div>
+        <p class="desc">La loi confie notamment aux autorités de santé publique le pouvoir de donner un avis
+        sur les politiques susceptibles d'avoir un impact sur la santé.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Porte d'entrée juridique de la santé publique
+        dans les débats d'aménagement. Fondement des avis de santé publique sur les projets.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="2" data-scales="nat mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2002</span><h3>Réorganisations municipales — vagues de fusions</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">Le gouvernement québécois regroupe des dizaines de municipalités par voie législative.
+        Des défusions suivront quelques années plus tard.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Démonstration concrète que les municipalités
+        sont des créatures de la province. Modifie la carte des acteurs de l'aménagement.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="era">
+    <div class="era-num">3</div>
+    <div class="era-txt">
+      <h2>La mesure et le climat</h2>
+      <p>2005 – 2026 · La durabilité entre dans la loi, puis l'aménagement se dote d'indicateurs et de cibles</p>
+    </div>
+  </div>
+
+  <div class="tl" id="tl3">
+
+    <div class="item" data-era="3" data-scales="nat mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2005–2006</span><h3>Loi sur les compétences municipales</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">Adoptée en 2005 et en vigueur en 2006, elle accorde aux municipalités des pouvoirs
+        généraux dans plusieurs domaines, notamment en matière de salubrité et de nuisances.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Base légale de nombreux règlements sanitaires
+        municipaux — bruit, insalubrité, nuisances, environnement.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2006</span><h3>Loi sur le développement durable</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">La loi énonce seize principes qui doivent guider l'action de l'administration publique
+        québécoise.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Le tout premier principe de la liste est
+        « santé et qualité de vie ». Point d'appui pour relier durabilité et santé publique.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="reg">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2012</span><h3>Entrée en vigueur du plan métropolitain de la région de Montréal</h3></div>
+        <div class="scales"><span class="sc sc-reg">Régionale (métropolitaine)</span></div>
+        <p class="desc">Le PMAD de la Communauté métropolitaine de Montréal fixe des seuils de densité et
+        oriente le développement vers les axes de transport collectif.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Densification, aires TOD, mobilité durable.
+        Première application concrète à grande échelle de ces principes au Québec.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="nat mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2017</span><h3>Loi 122 — les municipalités reconnues comme gouvernements de proximité</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">La loi élargit l'autonomie municipale et permet de remplacer l'approbation référendaire
+        par une politique de participation publique.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Modifie profondément la façon dont les
+        citoyens peuvent influencer un projet — davantage de participation en amont, moins de veto en aval.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2022</span><h3>Politique nationale de l'architecture et de l'aménagement du territoire</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">Le Québec se dote pour la première fois d'une politique nationale d'aménagement,
+        assortie d'un plan de mise en œuvre publié l'année suivante.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Vision d'ensemble qui met de l'avant la
+        sobriété foncière, la qualité des milieux de vie et l'adaptation aux changements climatiques.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="nat">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2024</span><h3>Nouvelles orientations gouvernementales en aménagement du territoire</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span></div>
+        <p class="desc">En vigueur depuis le 1<sup>er</sup> décembre, neuf orientations et vingt-deux objectifs
+        s'imposent aux MRC, qui disposent de trois ans pour réviser leur schéma d'aménagement.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Climat, milieux naturels, habitation,
+        mobilité, qualité des milieux de vie. Système de monitorage avec indicateurs et cibles.</div>
+      </div>
+    </div>
+
+    <div class="item" data-era="3" data-scales="nat mun">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="chead"><span class="year">2026</span><h3>Nouveau cadre réglementaire québécois sur les inondations</h3></div>
+        <div class="scales"><span class="sc sc-nat">Nationale</span><span class="sc sc-mun">Municipale</span></div>
+        <p class="desc">En vigueur depuis le 1<sup>er</sup> mars, il révise la manière de délimiter les zones
+        exposées aux inondations et d'y encadrer l'occupation du sol.</p>
+        <div class="health"><span class="tag">Enjeu de santé</span>Sécurité des personnes, salubrité des
+        logements après sinistre, santé mentale des populations touchées, adaptation au climat.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="empty" id="empty">Aucun jalon ne correspond à ce filtre.</div>
+</main>
+
+<footer>
+  <p><strong>Deux ruptures à faire ressortir.</strong> Autour de 1972-1979, l'aménagement et l'environnement
+  deviennent des champs réglementaires structurés, avec la LAU comme pivot. Puis, après trente ans d'immobilité,
+  2022-2024 réoriente le cadre vers la sobriété foncière, le climat et la qualité des milieux de vie.</p>
+  <p>Trois années portent deux jalons — 1978, 2001 et 2005-2006 — et l'ordre interne y est discutable.
+  C'est une bonne occasion de demander lequel des deux a eu le plus d'effet sur la santé de la population.</p>
+  <p>SPU 3001 · École de santé publique de l'Université de Montréal · Automne 2026</p>
+</footer>
+
+<script>
+(function(){
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var count = document.getElementById('count');
+  var empty = document.getElementById('empty');
+  var current = 'all';
+
+  function refresh(){
+    var shown = 0;
+    items.forEach(function(it){
+      var ok = current === 'all' || it.dataset.scales.split(' ').indexOf(current) !== -1;
+      it.classList.toggle('hidden', !ok);
+      if (ok) shown++;
+    });
+    count.textContent = shown + ' jalon' + (shown > 1 ? 's' : '') + ' sur ' + items.length;
+    empty.style.display = shown === 0 ? 'block' : 'none';
+    document.querySelectorAll('.era, .tl').forEach(function(sec){
+      if (sec.classList.contains('tl')) {
+        var vis = sec.querySelectorAll('.item:not(.hidden)').length;
+        sec.style.display = vis ? '' : 'none';
+        var era = sec.previousElementSibling;
+        if (era && era.classList.contains('era')) era.style.display = vis ? '' : 'none';
+      }
+    });
+  }
+
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      chips.forEach(function(o){ o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      current = c.dataset.filter;
+      refresh();
+    });
+  });
+
+  function bindToggle(id, sel, cls){
+    var btn = document.getElementById(id);
+    btn.addEventListener('click', function(){
+      var on = btn.getAttribute('aria-pressed') === 'true';
+      btn.setAttribute('aria-pressed', on ? 'false' : 'true');
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.toggle(cls, !on); });
+      btn.textContent = (on ? 'Masquer' : 'Afficher') + btn.dataset.label;
+    });
+  }
+  document.getElementById('hideYears').dataset.label = ' les années';
+  document.getElementById('hideHealth').dataset.label = ' les enjeux';
+  bindToggle('hideYears', '.year', 'masked');
+  bindToggle('hideHealth', '.health', 'masked');
+
+  refresh();
+})();
+</script>
+
+</body>
+</html>
