@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -369,9 +370,22 @@ function longueur(t){var s=0;for(var i=0;i<t.length-1;i++)s+=dist(t[i],t[i+1]);r
 
 /* ===================== CARTE ===================== */
 var map=L.map("map",{zoomControl:true,tap:true}).setView([45.5300,-73.6220],window.innerWidth<=800?15:16);
-var tileUrl={sombre:"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-             clair:"https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-             voyager:"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"};
+/* ---------------------------------------------------------------------------
+   CLÉ CARTO. Depuis août 2026, les fonds raster de CARTO exigent une clé,
+   gratuite, à demander sur carto.com/basemaps/apikey (aucun compte requis).
+   Sans clé, les tuiles s'affichent quand même mais portent un filigrane
+   « API key required ». Coller la clé entre les guillemets ci-dessous.
+   La clé est visible par quiconque ouvre le fichier : c'est prévu ainsi.
+   --------------------------------------------------------------------------- */
+var CARTO_KEY = "cb1_26ae_1_f3e4aab45c699cd5da225401";
+
+function tuilesCarto(style){
+  var base = "https://{s}.basemaps.cartocdn.com/rastertiles/" + style + "/{z}/{x}/{y}{r}.png";
+  return CARTO_KEY ? base + "?key=" + CARTO_KEY : base;
+}
+var tileUrl={sombre:tuilesCarto("dark_all"),
+             clair:tuilesCarto("light_all"),
+             voyager:tuilesCarto("voyager")};
 var fondClair={sombre:false, clair:true, voyager:true};
 var ATTR='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://carto.com/">CARTO</a> · SPU 3001, ESPUM';
 var FOND_DEFAUT="voyager";
