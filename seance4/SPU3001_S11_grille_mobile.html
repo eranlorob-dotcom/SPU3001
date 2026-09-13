@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#140C74">
+<title>Grille d'observation terrain · SPU 3001 · Séance 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#140C74; --teal:#21AEAD; --blue:#0482D3; --gold:#C9962B;
+  --bg:#F4F6FC; --card:#FFFFFF; --ink:#14143A; --ink2:#3A3F6E; --muted:#7A80A8;
+  --line:#D8DEF0; --wash:#EEF1FB; --ok:#178f8e;
+  --fs:16px;
+}
+body.nuit{
+  --bg:#070620; --card:#11103E; --ink:#EEF0FB; --ink2:#C4C8EA; --muted:#8B8FC4;
+  --line:#2A2870; --wash:#181A52;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Source Sans 3",system-ui,sans-serif;font-size:var(--fs);
+  background:var(--bg);color:var(--ink);line-height:1.45;padding-bottom:92px}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+
+header{position:sticky;top:0;z-index:50;background:linear-gradient(100deg,#0b0930,#161354 60%,#1c2a8a);
+  color:#fff;padding:11px 14px calc(11px + env(safe-area-inset-top,0)) 14px;
+  padding-top:calc(11px + env(safe-area-inset-top,0));border-bottom:2px solid var(--teal)}
+header .row{display:flex;align-items:center;gap:10px}
+header h1{font-size:1rem;font-weight:700;line-height:1.15;flex:1}
+header h1 small{display:block;font-size:.72rem;font-weight:400;color:#9fe4e3;margin-top:1px}
+.hbtn{background:#ffffff1f;border:1px solid #ffffff33;color:#fff;border-radius:9px;
+  min-width:42px;height:38px;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
+.prog{height:5px;background:#ffffff26;border-radius:3px;margin-top:9px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+.progtxt{font-size:.68rem;color:#c9cef0;margin-top:4px;display:flex;justify-content:space-between}
+
+main{padding:12px 12px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.card > h2{font-size:.95rem;font-weight:700;padding:13px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;
+  background:var(--wash);border-bottom:1px solid var(--line)}
+.card > h2 .no{width:26px;height:26px;border-radius:8px;background:var(--navy);color:#fff;
+  display:grid;place-items:center;font-size:.82rem;font-weight:900;flex:0 0 auto}
+.card > h2 .nm{flex:1;min-width:0}
+.card > h2 .nm em{display:block;font-style:normal;font-size:.7rem;font-weight:600;color:var(--teal);margin-top:1px}
+.card > h2 .chev{color:var(--muted);font-size:.8rem;transition:transform .2s}
+.card.open > h2 .chev{transform:rotate(90deg)}
+.body{display:none;padding:12px 14px 16px}
+.card.open .body{display:block}
+.intent{font-size:.82rem;color:var(--ink2);background:var(--wash);border-left:3px solid var(--teal);
+  padding:9px 11px;border-radius:0 9px 9px 0;margin-bottom:14px}
+
+.item{padding:11px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .q{font-size:.88rem;font-weight:600;margin-bottom:8px;display:block}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;min-height:44px;border:1.5px solid var(--line);background:var(--card);color:var(--ink2);
+  border-radius:10px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.seg button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.seg button.on.so{background:var(--muted);border-color:var(--muted)}
+.seg.oui button.on{background:var(--ok);border-color:var(--ok)}
+input[type=text],input[type=number],textarea{width:100%;min-height:44px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);border-radius:10px;padding:9px 11px;font:inherit;font-size:.92rem}
+textarea{min-height:66px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--teal)}
+.notewrap{margin-top:7px}
+.notetog{background:none;border:0;color:var(--teal);font:inherit;font-size:.76rem;font-weight:700;
+  cursor:pointer;padding:4px 0}
+.note{display:none;margin-top:5px}
+.note.show{display:block}
+.equite{margin-top:14px;background:#FFFBF0;border:1px solid var(--gold);border-radius:11px;padding:11px 12px}
+body.nuit .equite{background:#2a2410;border-color:#8a6a1e}
+.equite b{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.equite p{font-size:.82rem;color:var(--ink2);margin-bottom:8px}
+.reg{margin-top:11px;font-size:.72rem;color:var(--muted)}
+.ident{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ident label{font-size:.72rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px;
+  text-transform:uppercase;letter-spacing:.05em}
+.ident .full{grid-column:1/-1}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);
+  border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0))}
+.bar button{flex:1;min-height:46px;border-radius:11px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;
+  border:1.5px solid var(--navy);background:var(--card);color:var(--navy)}
+.bar button.primary{background:var(--navy);color:#fff}
+body.nuit .bar button{border-color:var(--teal);color:var(--teal)}
+body.nuit .bar button.primary{background:var(--teal);color:#06202a}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:90;background:var(--navy);
+  color:#fff;padding:11px 18px;border-radius:999px;font-size:.84rem;font-weight:600;opacity:0;
+  pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+.urgence{background:#FFF4F4;border:1.5px solid #C0392B;border-radius:12px;padding:11px 13px;margin-bottom:12px;font-size:.82rem}
+body.nuit .urgence{background:#2c1414;color:#ffd9d4}
+.urgence b{color:#C0392B;display:block;margin-bottom:3px;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
+body.nuit .urgence b{color:#ff8f83}
+.foot{font-size:.72rem;color:var(--muted);text-align:center;padding:14px 12px 8px}
+#sortie{width:100%;min-height:240px;font-family:"JetBrains Mono",monospace;font-size:.72rem;
+  border:1.5px solid var(--line);border-radius:11px;padding:11px;background:var(--card);color:var(--ink)}
+dialog{border:0;border-radius:16px;padding:0;width:min(94vw,560px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#00000088}
+.dlg{padding:16px}
+.dlg h3{font-size:1rem;margin-bottom:9px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <h1>Grille d'observation terrain
+      <small>SPU 3001 · Séance 11 · Autour de l'ESPUM</small></h1>
+    <button class="hbtn" id="btn-nuit" onclick="toggleNuit()" title="Mode nuit">☾</button>
+    <button class="hbtn" onclick="setFs(1)" title="Agrandir">A+</button>
+    <button class="hbtn" onclick="setFs(-1)" title="Réduire">A−</button>
+  </div>
+  <div class="prog"><i id="pbar"></i></div>
+  <div class="progtxt"><span id="ptxt">0 réponse</span><span id="psave">enregistré localement</span></div>
+</header>
+
+<main>
+  <div class="urgence">
+    <b>En cas de séparation du groupe</b>
+    Point de ralliement unique : la salle de cours de l'ESPUM, 7101, avenue du Parc, accessible pendant
+    toute la séance. Aucune station n'est à plus de sept minutes de marche. Traverser l'avenue du Parc
+    uniquement aux feux, et ne franchir la voie ferrée qu'aux passages aménagés.
+  </div>
+
+  <div class="card open" id="c-ident">
+    <h2 onclick="toggleCard('c-ident')"><span class="no">i</span>
+      <span class="nm">Identification<em>À remplir au rassemblement</em></span><span class="chev">›</span></h2>
+    <div class="body">
+      <div class="ident">
+        <div class="full"><label for="f-nom">Nom</label><input type="text" id="f-nom" data-k="ident.nom"></div>
+        <div><label for="f-eq">Équipe n°</label><input type="text" id="f-eq" data-k="ident.equipe"></div>
+        <div><label for="f-date">Date</label><input type="text" id="f-date" data-k="ident.date"></div>
+        <div><label for="f-meteo">Conditions</label><input type="text" id="f-meteo" data-k="ident.meteo" placeholder="ciel, vent, pluie"></div>
+        <div><label for="f-temp">Température</label><input type="text" id="f-temp" data-k="ident.temp"></div>
+        <div class="full"><label for="f-heure">Heure de départ et de retour</label><input type="text" id="f-heure" data-k="ident.heure"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="card" id="c-synth">
+    <h2 onclick="toggleCard('c-synth')"><span class="no">•</span>
+      <span class="nm">Synthèse de fin de parcours<em>À la halte, avant le débreffage</em></span><span class="chev">›</span></h2>
+    <div class="body" id="synthbody"></div>
+  </div>
+
+  <div class="foot">
+    Les réponses restent sur votre appareil. Rien n'est transmis automatiquement :
+    utilisez « Exporter » à la fin de la sortie, avant de fermer l'onglet.
+  </div>
+</main>
+
+<div class="bar">
+  <button onclick="ouvrirExport()">Exporter</button>
+  <button class="primary" onclick="toutOuvrir()">Tout déplier</button>
+  <button onclick="effacer()">Effacer</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<dialog id="dlg">
+  <div class="dlg">
+    <h3>Exporter mes observations</h3>
+    <p style="font-size:.82rem;color:var(--ink2);margin-bottom:10px">
+      Copier le texte ci-dessous dans un courriel ou une note, ou télécharger le fichier.
+      À faire avant de quitter la page.</p>
+    <textarea id="sortie" readonly></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="hbtn" style="flex:1;background:var(--navy);border-color:var(--navy);min-height:44px" onclick="copier()">Copier</button>
+      <button class="hbtn" style="flex:1;background:var(--navy);border-color:var(--navy);min-height:44px" onclick="telecharger('txt')">Fichier .txt</button>
+      <button class="hbtn" style="flex:1;background:var(--navy);border-color:var(--navy);min-height:44px" onclick="telecharger('csv')">Fichier .csv</button>
+      <button class="hbtn" style="flex:1;min-height:44px;background:var(--wash);border-color:var(--line);color:var(--ink)" onclick="document.getElementById('dlg').close()">Fermer</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* ====================== CONTENU ====================== */
+var DIMS = [
+ {no:1,cle:"marchabilite",nom:"Marchabilité",st:"Station 1 · L'avenue du Parc et la station Parc",
+  intent:"Vérifier si la marche est possible, confortable et continue, et pas seulement tolérée. Deux cents mètres séparent la porte de l'École de l'entrée de la station : c'est le laboratoire le plus court du parcours.",
+  items:[["Trottoir présent des deux côtés de la rue","e"],["Largeur utile permettant à deux personnes de se croiser (1,5 m et plus)","e"],["Surface en bon état : pas de fissures, de dénivellations ni d'accumulation d'eau","e"],["Trottoir libre d'obstacles : poteaux, bacs, panneaux, entrées charretières","e"],["Traverses marquées et visibles aux intersections","e"],["Bateaux de trottoir abaissés et surfaces podotactiles aux traverses","e"],["Traversée de l'avenue du Parc : nombre de voies à franchir d'un seul tenant","n"],["Refuge central, avancée de trottoir ou autre mesure d'apaisement","c"],["Franchissements du corridor ferroviaire disponibles à moins de 400 m (nombre)","n"],["Sentiers de désir ou franchissements informels visibles le long de la voie","c"],["Bancs, appuis ischiatiques ou abri sur le parcours","e"],["Destinations utiles atteignables en 5 minutes de marche (nombre estimé)","n"]],
+  eq:"Refaire mentalement le trajet entre la station et l'École dans la peau d'une personne de 80 ans avec une canne, puis d'un parent poussant une poussette. Qu'est-ce qui devient bloquant, et combien de temps cela ajoute-t-il ?",
+  reg:"Règlement d'urbanisme de l'arrondissement, Plan d'urbanisme de la Ville de Montréal, réseau artériel administratif de la ville centrale, Vision Zéro"},
+ {no:2,cle:"verdissement",nom:"Verdissement",st:"Station 2 · Parc Athéna et les rues résidentielles de Parc-Extension",
+  intent:"Distinguer la présence d'espace vert de la qualité de son accès. Parc-Extension est l'un des secteurs les plus denses et les moins arborés de l'île : le critère 3-30-300 s'y teste presque à l'oeil nu.",
+  items:[["Canopée au-dessus du trottoir : part d'ombre estimée (0, moins de 30 %, 30 à 60 %, plus de 60 %)","e"],["Arbres de rue matures (tronc de plus de 30 cm) sur le segment (nombre)","n"],["Jeunes plantations récentes et leur état (tuteur, paillis, arrosage)","e"],["Fosses de plantation suffisantes : sol non compacté, surface perméable","e"],["Surfaces minéralisées sombres dominantes (asphalte, toiture noire, stationnement)","e"],["Critère 3-30-300 · au moins 3 arbres visibles depuis les logements observés","c"],["Critère 3-30-300 · canopée du secteur approchant 30 %","c"],["Critère 3-30-300 · espace vert de qualité à moins de 300 m de marche réelle","c"],["Cours avant et arrière végétalisées ou entièrement pavées","e"],["Qualité de l'espace vert : ombre, bancs, eau potable, toilettes, éclairage","e"],["Accès au parc sans franchir une artère à plus de deux voies ni la voie ferrée","c"],["Signes d'usage réel au moment de l'observation (personnes présentes, nombre)","n"]],
+  eq:"Comparer la canopée de la rue observée à celle des rues traversées côté est de l'avenue du Parc. L'écart tient-il à l'âge du tissu, à la largeur de l'emprise, ou à autre chose ? Ce qui reste inexpliqué se note tel quel.",
+  reg:"Règlement sur la protection de l'arbre, Plan d'urbanisme, Plan climat de Montréal, normes de verdissement des aires de stationnement"},
+ {no:3,cle:"usages",nom:"Compatibilité des usages",st:"Station 3 · Rue Jean-Talon Ouest, secteur commercial de Parc-Extension",
+  intent:"Lire la mixité non pas comme une liste d'usages, mais comme une série d'interfaces. Ce qui produit ou évite la nuisance, c'est la manière dont deux usages se touchent.",
+  items:[["Usages présents sur le segment : résidentiel","c"],["Usages présents : commercial de détail","c"],["Usages présents : restauration, débit de boisson","c"],["Usages présents : institutionnel, communautaire, culte","c"],["Usages présents : atelier, garage, entreposage, logistique","c"],["Usages présents : stationnement de surface, terrain vague","c"],["Rez-de-chaussée actifs : vitrines, entrées fréquentes, façade animée","e"],["Murs aveugles, façades arrière ou stationnement donnant sur le trottoir","e"],["Mixité verticale : logement au-dessus du commerce","e"],["Transition aménagée entre deux usages contrastés (marge, écran, plantation)","e"],["Nuisance visible d'un usage sur son voisin (livraison, ventilation, éclairage, bruit)","e"],["Locaux vacants ou affiches « à louer » (nombre)","n"],["Signes d'intensification récente : chantier, rénovation lourde, enseigne neuve (nombre)","n"]],
+  eq:"Quel usage est protégé par la transition aménagée, et quel usage la subit ? Les commerces observés desservent-ils les résidents du secteur ou une clientèle venue d'ailleurs ?",
+  reg:"Règlement d'urbanisme de l'arrondissement (catégories d'usages, normes d'implantation), PIIA, usages conditionnels, programme particulier d'urbanisme, Règlement pour une métropole mixte"},
+ {no:4,cle:"bruit_air",nom:"Bruit et air",st:"Station 4 · Secteur Marconi-Alexandra, à l'est de l'avenue du Parc",
+  intent:"Documenter sans instrument une exposition qui est d'abord une question de distance, de vitesse et de forme urbaine. Ici, trois sources se superposent : l'artère, la voie ferrée et le camionnage d'un secteur d'emploi.",
+  items:[["Source dominante du bruit (circulation, camionnage, train, ventilation, chantier)","t"],["Test de conversation : distance à laquelle il faut élever la voix (en pas)","n"],["Véhicules lourds observés en 5 minutes (nombre)","n"],["Vitesse ressentie des véhicules par rapport à la limite affichée","e"],["Distance entre le bord du trottoir et la première voie de circulation (en pas)","n"],["Distance estimée entre les logements et le corridor ferroviaire (en pas)","n"],["Écran, alignement bâti, talus ou plantation atténuant l'exposition","e"],["Odeurs perceptibles et source probable","t"],["Poussières, sol nu, ressuage, résidus au sol","e"],["Revêtement sombre dominant et absence d'ombre au moment de l'observation","e"],["Ressenti thermique par rapport à la station précédente (plus frais, égal, plus chaud)","t"],["Arrêt d'autobus exposé : abri, banc, recul par rapport à la voie","e"]],
+  eq:"Qui habite le plus près de l'artère et de la voie ferrée ? Comparer le type, l'âge et l'état apparent des logements riverains à ceux observés à la station 2.",
+  reg:"Règlement d'urbanisme (marges de recul, écrans), règlement sur le bruit de la Ville, corridor ferroviaire de compétence fédérale, lignes directrices sur la proximité des voies ferrées"},
+ {no:5,cle:"alimentaire_A",nom:"Environnement alimentaire · volet A",st:"Station 3 · Rue Jean-Talon Ouest",
+  intent:"Volet A, rue Jean-Talon Ouest. Deux secteurs séparés par une seule avenue n'offrent pas la même alimentation : c'est le contraste entre les deux volets qui est instructif.",
+  items:[["Épicerie à assortiment complet (nombre)","n"],["Fruiterie, boucherie, poissonnerie, boulangerie, épicerie spécialisée (nombre)","n"],["Dépanneur, station-service avec vente d'aliments (nombre)","n"],["Restauration rapide, comptoir à emporter (nombre)","n"],["Restaurant avec service aux tables, café (nombre)","n"],["Débit de boisson, cannabis, loterie (nombre)","n"],["Distance de marche jusqu'au commerce d'aliments frais le plus proche (en minutes)","n"],["Accès piéton direct à l'entrée du commerce, sans traverser un stationnement","e"],["Publicité alimentaire visible depuis la rue (affiches, menu-board, vitrophanie)","e"],["Proximité d'une école, d'une garderie ou d'un parc (moins de 250 m)","c"],["Commerces alimentaires ouverts en soirée (après 19 h)","e"],["Alimentation de proximité : jardin, marché, frigo-partage, cuisine ou épicerie collective","c"]],
+  eq:"Une personne sans voiture, avec un budget serré, qui termine son quart à 18 h : où fait-elle son épicerie depuis chacun des deux secteurs, et en combien de temps ?",
+  reg:"Règlement d'urbanisme (catégories d'usages commerciaux), programme particulier d'urbanisme, politique alimentaire de la Ville de Montréal"},
+ {no:5,cle:"alimentaire_B",nom:"Environnement alimentaire · volet B",st:"Station 4 · Secteur Marconi-Alexandra",
+  intent:"Volet B, dans Marconi-Alexandra. Remplir en gardant le volet A sous les yeux : l'écart entre les deux relevés est le résultat recherché.",
+  items:[["Épicerie à assortiment complet (nombre)","n"],["Fruiterie, boucherie, poissonnerie, boulangerie, épicerie spécialisée (nombre)","n"],["Dépanneur, station-service avec vente d'aliments (nombre)","n"],["Restauration rapide, comptoir à emporter (nombre)","n"],["Restaurant avec service aux tables, café (nombre)","n"],["Débit de boisson, cannabis, loterie (nombre)","n"],["Distance de marche jusqu'au commerce d'aliments frais le plus proche (en minutes)","n"],["Accès piéton direct à l'entrée du commerce, sans traverser un stationnement","e"],["Publicité alimentaire visible depuis la rue (affiches, menu-board, vitrophanie)","e"],["Proximité d'une école, d'une garderie ou d'un parc (moins de 250 m)","c"],["Commerces alimentaires ouverts en soirée (après 19 h)","e"],["Alimentation de proximité : jardin, marché, frigo-partage, cuisine ou épicerie collective","c"]],
+  eq:"Comparer directement au volet A : quelle offre gagne, laquelle disparaît, et qu'est-ce que cela change pour une personne sans voiture ?",
+  reg:"Règlement d'urbanisme (catégories d'usages commerciaux), programme particulier d'urbanisme, politique alimentaire de la Ville de Montréal"},
+ {no:6,cle:"eclairage",nom:"Éclairage et sécurité perçue",st:"Station 5 · Boucle de nuit, avenue du Parc et rues adjacentes",
+  intent:"Cette dimension ne s'observe pas de jour. Deux cents mètres séparent une artère surexposée d'une rue de secteur d'emploi presque sans éclairage piéton : le contraste se lit en quelques minutes.",
+  items:[["Lampadaires continus, sans interruption de plus d'une portée","e"],["Éclairage dirigé vers le trottoir et non uniquement vers la chaussée","e"],["Zones d'ombre franches entre deux lampadaires (nombre sur le segment)","n"],["Éblouissement ou lumière intrusive vers les logements","e"],["Traverses et abords du passage ferroviaire éclairés distinctement","e"],["Champ de vision dégagé : pas d'angle mort, de haie haute, de recoin ni de mur aveugle","e"],["Surveillance naturelle : fenêtres habitées donnant sur la rue","e"],["Commerces ou équipements ouverts et éclairés sur le parcours","e"],["Entretien : graffitis, bris, mobilier endommagé, déchets","e"],["Repérage : nom de rue lisible, signalétique, points de repère visibles","e"],["Sentiment personnel de sécurité sur le segment (1 = très inconfortable, 5 = tout à fait à l'aise)","n"],["Endroit précis où vous avez ralenti, accéléré ou changé de trottoir","t"]],
+  eq:"Le sentiment de sécurité n'est pas également distribué. Comparer les cotes au sein de l'équipe avant de conclure : l'écart entre les réponses est une donnée en soi.",
+  reg:"Politique d'éclairage de la Ville de Montréal, PIIA, règlement d'urbanisme, programmes d'aménagement du domaine public"}
+];
+
+var SYNTH = [
+ ["rupture","La rupture","Indiquer l'endroit précis où la trame marchable cesse d'être continue. Décrire ce qui change exactement à cet endroit."],
+ ["contradiction","La contradiction","Nommer un aménagement qui améliore une dimension tout en dégradant une autre. Pour qui, et aux dépens de qui ?"],
+ ["levier","Le levier réglementaire","Choisir un seul problème observé et nommer l'outil de la LAU qui pourrait le corriger, en précisant qui détient la compétence."],
+ ["ecart","L'écart de groupe","Sur quelle dimension les cotes de votre équipe divergent-elles le plus ? Formuler une hypothèse sur l'origine de cet écart."],
+ ["photos","Photos prises","Une ligne par photo : numéro, station, ce qu'elle documente, dimension visée."]
+];
+
+/* ====================== ÉTAT ET STOCKAGE ====================== */
+var CLE="spu3001_s11_grille_v1";
+var D={};
+var memoire={};
+var stock={
+  lire:function(k){ try{return window.localStorage.getItem(k);}catch(e){return memoire[k]||null;} },
+  ecrire:function(k,v){ try{window.localStorage.setItem(k,v);}catch(e){memoire[k]=v;} },
+  vider:function(k){ try{window.localStorage.removeItem(k);}catch(e){delete memoire[k];} }
+};
+function charger(){ var b=stock.lire(CLE); if(b){ try{D=JSON.parse(b);}catch(e){D={};} } }
+function sauver(){ stock.ecrire(CLE,JSON.stringify(D)); maj(); }
+function set(k,v){ if(v===""||v===null||v===undefined){delete D[k];} else {D[k]=v;} sauver(); }
+
+/* ====================== RENDU ====================== */
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function rendreItem(dcle,i,enonce,typ){
+  var k=dcle+".i"+i, v=D[k]||"", nk=k+".note", nv=D[nk]||"";
+  var h='<div class="item"><span class="q">'+esc(enonce)+'</span>';
+  if(typ==="e"){
+    h+='<div class="seg">';
+    ["0","1","2","3","s.o."].forEach(function(o){
+      h+='<button type="button" class="'+(v===o?"on":"")+(o==="s.o."?" so":"")+'" onclick="cote(\''+k+'\',\''+o+'\',this)">'+o+'</button>';
+    });
+    h+='</div>';
+  } else if(typ==="c"){
+    h+='<div class="seg oui">';
+    ["oui","non"].forEach(function(o){
+      h+='<button type="button" class="'+(v===o?"on":"")+'" onclick="cote(\''+k+'\',\''+o+'\',this)">'+o+'</button>';
+    });
+    h+='</div>';
+  } else if(typ==="n"){
+    h+='<input type="number" inputmode="decimal" value="'+esc(v)+'" oninput="set(\''+k+'\',this.value)" placeholder="nombre">';
+  } else {
+    h+='<input type="text" value="'+esc(v)+'" oninput="set(\''+k+'\',this.value)" placeholder="réponse">';
+  }
+  h+='<div class="notewrap"><button type="button" class="notetog" onclick="basculeNote(this)">'+
+     (nv?"note et photo n° (remplie)":"+ note, photo n°")+'</button>'+
+     '<div class="note'+(nv?" show":"")+'"><input type="text" value="'+esc(nv)+
+     '" oninput="set(\''+nk+'\',this.value)" placeholder="note, comptage, photo n°"></div></div></div>';
+  return h;
+}
+
+function rendre(){
+  var out="";
+  DIMS.forEach(function(d){
+    out+='<div class="card" id="c-'+d.cle+'"><h2 onclick="toggleCard(\'c-'+d.cle+'\')">'+
+         '<span class="no">'+d.no+'</span><span class="nm">'+esc(d.nom)+'<em>'+esc(d.st)+'</em></span>'+
+         '<span class="chev">›</span></h2><div class="body">'+
+         '<div class="intent">'+esc(d.intent)+'</div>';
+    d.items.forEach(function(it,i){ out+=rendreItem(d.cle,i,it[0],it[1]); });
+    out+='<div class="equite"><b>Pour qui ?</b><p>'+esc(d.eq)+'</p>'+
+         '<textarea placeholder="Votre réponse" oninput="set(\''+d.cle+'.equite\',this.value)">'+
+         esc(D[d.cle+".equite"]||"")+'</textarea></div>';
+    out+='<div class="item" style="border-top:1px solid var(--line);margin-top:12px"><span class="q">'+
+         'Cote globale de la dimension sur ce segment</span><div class="seg">';
+    ["0","1","2","3"].forEach(function(o){
+      out+='<button type="button" class="'+((D[d.cle+".global"]||"")===o?"on":"")+
+           '" onclick="cote(\''+d.cle+'.global\',\''+o+'\',this)">'+o+'</button>';
+    });
+    out+='</div></div><div class="reg">Outil réglementaire en jeu : '+esc(d.reg)+'</div>';
+    out+='</div></div>';
+  });
+  document.getElementById("sections").innerHTML=out;
+
+  var sy="";
+  SYNTH.forEach(function(s){
+    sy+='<div class="item"><span class="q">'+esc(s[1])+'</span>'+
+        '<p style="font-size:.78rem;color:var(--muted);margin-bottom:7px">'+esc(s[2])+'</p>'+
+        '<textarea oninput="set(\'synth.'+s[0]+'\',this.value)">'+esc(D["synth."+s[0]]||"")+'</textarea></div>';
+  });
+  document.getElementById("synthbody").innerHTML=sy;
+
+  document.querySelectorAll("[data-k]").forEach(function(el){
+    el.value=D[el.dataset.k]||"";
+    el.addEventListener("input",function(){set(el.dataset.k,el.value);});
+  });
+  maj();
+}
+
+function cote(k,v,btn){
+  if(D[k]===v){ delete D[k]; } else { D[k]=v; }
+  var p=btn.parentNode;
+  p.querySelectorAll("button").forEach(function(b){b.classList.remove("on");});
+  if(D[k]===v) btn.classList.add("on");
+  sauver();
+}
+function basculeNote(b){ b.nextElementSibling.classList.toggle("show"); }
+function toggleCard(id){ document.getElementById(id).classList.toggle("open"); }
+function toutOuvrir(){
+  var cards=document.querySelectorAll(".card");
+  var tous=Array.prototype.every.call(cards,function(c){return c.classList.contains("open");});
+  cards.forEach(function(c){ c.classList.toggle("open",!tous); });
+}
+function maj(){
+  var total=0; DIMS.forEach(function(d){ total+=d.items.length+2; });
+  total+=SYNTH.length+6;
+  var n=Object.keys(D).filter(function(k){return k.indexOf(".note")===-1;}).length;
+  var pc=Math.min(100,Math.round(n/total*100));
+  document.getElementById("pbar").style.width=pc+"%";
+  document.getElementById("ptxt").textContent=n+" réponse"+(n>1?"s":"")+" · "+pc+" %";
+}
+
+/* ====================== EXPORT ====================== */
+function lignes(){
+  var L=[];
+  L.push(["section","element","reponse","note"]);
+  L.push(["Identification","Nom",D["ident.nom"]||"",""]);
+  L.push(["Identification","Équipe",D["ident.equipe"]||"",""]);
+  L.push(["Identification","Date",D["ident.date"]||"",""]);
+  L.push(["Identification","Conditions",D["ident.meteo"]||"",""]);
+  L.push(["Identification","Température",D["ident.temp"]||"",""]);
+  L.push(["Identification","Heures",D["ident.heure"]||"",""]);
+  DIMS.forEach(function(d){
+    d.items.forEach(function(it,i){
+      L.push([d.nom,it[0],D[d.cle+".i"+i]||"",D[d.cle+".i"+i+".note"]||""]);
+    });
+    L.push([d.nom,"Cote globale",D[d.cle+".global"]||"",""]);
+    L.push([d.nom,"Pour qui ?",D[d.cle+".equite"]||"",""]);
+  });
+  SYNTH.forEach(function(s){ L.push(["Synthèse",s[1],D["synth."+s[0]]||"",""]); });
+  return L;
+}
+function texte(){
+  var t="GRILLE D'OBSERVATION TERRAIN · SPU 3001 · Séance 11 · Autour de l'ESPUM\n";
+  t+="Exporté le "+new Date().toLocaleString("fr-CA")+"\n";
+  var sec="";
+  lignes().slice(1).forEach(function(r){
+    if(r[0]!==sec){ sec=r[0]; t+="\n== "+sec+" ==\n"; }
+    t+="- "+r[1]+" : "+(r[2]||"(sans réponse)")+(r[3]?"  [note : "+r[3]+"]":"")+"\n";
+  });
+  return t;
+}
+function csv(){
+  return "\ufeff"+lignes().map(function(r){
+    return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(";");
+  }).join("\n");
+}
+function ouvrirExport(){
+  document.getElementById("sortie").value=texte();
+  document.getElementById("dlg").showModal();
+}
+function copier(){
+  var ta=document.getElementById("sortie");
+  ta.select(); ta.setSelectionRange(0,999999);
+  var ok=false;
+  try{ ok=document.execCommand("copy"); }catch(e){}
+  if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){toast("Copié");},function(){}); }
+  toast(ok?"Copié":"Sélectionnez puis copiez");
+}
+function telecharger(fmt){
+  var nom=(D["ident.nom"]||"grille").replace(/[^\wÀ-ÿ-]+/g,"_");
+  var contenu=fmt==="csv"?csv():texte();
+  var b=new Blob([contenu],{type:(fmt==="csv"?"text/csv":"text/plain")+";charset=utf-8"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(b);
+  a.download="SPU3001_S11_"+nom+"."+fmt;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  toast("Fichier créé");
+}
+function effacer(){
+  if(!confirm("Effacer toutes les réponses enregistrées sur cet appareil ?")) return;
+  D={}; stock.vider(CLE); rendre(); toast("Effacé");
+}
+function toast(m){
+  var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show");
+  setTimeout(function(){t.classList.remove("show");},1700);
+}
+
+/* ====================== AFFICHAGE ====================== */
+function toggleNuit(){
+  document.body.classList.toggle("nuit");
+  stock.ecrire(CLE+"_nuit",document.body.classList.contains("nuit")?"1":"0");
+  document.getElementById("btn-nuit").textContent=document.body.classList.contains("nuit")?"☀":"☾";
+}
+var fs=16;
+function setFs(d){
+  fs=Math.max(14,Math.min(21,fs+d));
+  document.documentElement.style.setProperty("--fs",fs+"px");
+  stock.ecrire(CLE+"_fs",String(fs));
+}
+(function(){
+  charger();
+  if(stock.lire(CLE+"_nuit")==="1"){ document.body.classList.add("nuit"); document.getElementById("btn-nuit").textContent="☀"; }
+  var f=parseInt(stock.lire(CLE+"_fs")||"16",10);
+  if(f){ fs=f; document.documentElement.style.setProperty("--fs",fs+"px"); }
+  rendre();
+  window.addEventListener("beforeunload",function(e){
+    if(Object.keys(D).length>3){ e.preventDefault(); e.returnValue=""; }
+  });
+})();
+</script>
+</body>
+</html>
